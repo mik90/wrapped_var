@@ -3,5 +3,6 @@
     "cmake.buildArgs": [
         "-DCMAKE_MAKE_PROGRAM=/usr/bin/ninja"
     ],
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "editor.defaultFormatter": "xaver.clang-format"
 }
