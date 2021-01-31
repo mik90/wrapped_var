@@ -1,8 +1,8 @@
 {
     "cmake.configureOnOpen": false,
-    "cmake.buildArgs": [
-        "-DCMAKE_MAKE_PROGRAM=/usr/bin/ninja"
-    ],
+    "cmake.configureSettings": {
+        "CMAKE_MAKE_PROGRAM": "/usr/bin/ninja"
+    },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    "editor.defaultFormatter": "xaver.clang-format"
+    "editor.defaultFormatter": "xaver.clang-format",
 }

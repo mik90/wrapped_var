@@ -1,6 +1,7 @@
 include(GoogleTest)
 
 add_executable(UnitTest 
+  main.cpp
   test_mutex.cpp
 )
 
