@@ -1,7 +1,9 @@
 {
     "cmake.configureOnOpen": false,
     "cmake.configureSettings": {
-        "CMAKE_MAKE_PROGRAM": "/usr/bin/ninja"
+        "CMAKE_MAKE_PROGRAM": "/usr/bin/ninja",
+        "ENABLE_PCF" : "ON",
+        "ENABLE_TESTING" : "ON"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "editor.defaultFormatter": "xaver.clang-format",
