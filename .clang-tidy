@@ -1,5 +1,15 @@
 ---
-Checks:          '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm*'
+Checks: >
+*,
+-readability-uppercase-literal-suffix,
+-modernize-use-trailing-return-type,
+-llvm*,
+-hicpp-*,
+-fuchsia-*,
+-google-*,
+-zircon-*,
+-abseil-*
+>
 WarningsAsErrors: '*'
 HeaderFilterRegex: ''
 FormatStyle:     none
