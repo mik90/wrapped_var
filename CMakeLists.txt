@@ -56,10 +56,6 @@ endif()
 
 # Set up some extra Conan dependencies based on our needs before loading Conan
 set(CONAN_EXTRA_REQUIRES "")
-if(ENABLE_TESTING)
-  list(APPEND CONAN_EXTRA_REQUIRES "gtest/1.10.0")
-endif()
-
 set(CONAN_EXTRA_OPTIONS "")
 
 include(cmake/Conan.cmake)

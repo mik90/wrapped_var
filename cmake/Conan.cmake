@@ -13,7 +13,7 @@ macro(run_conan)
     URL
     https://api.bintray.com/conan/bincrafters/public-conan)
 
-  conan_cmake_run(
+  conan_cmake_run(CONANFILE conanfile.py
     REQUIRES
     ${CONAN_EXTRA_REQUIRES}
     OPTIONS
