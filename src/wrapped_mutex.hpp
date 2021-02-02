@@ -33,6 +33,7 @@ class WrappedMutex {
 public:
   explicit WrappedMutex(UnderlyingVarType var) : var_(std::move(var)) {}
   VarWithLock<UnderlyingVarType, MutexType> get() { return {var_, std::unique_lock{mutex_}}; }
+  bool try_lock() { return mutex_.try_lock(); }
 
 private:
   UnderlyingVarType var_;
