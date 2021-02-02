@@ -6,5 +6,5 @@ target_link_libraries(WrappedVarLib INTERFACE
 )
 
 target_include_directories(WrappedVarLib INTERFACE
-  ${PROJECT_SOURCE_DIR}/src
+  ${CMAKE_CURRENT_LIST_DIR}
 )
