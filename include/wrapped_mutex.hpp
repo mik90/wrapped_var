@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MIK90_WRAPPED_MUTEX_HPP
+#define MIK90_WRAPPED_MUTEX_HPP
 
 #include <mutex>
 #include <utility>
@@ -9,10 +10,10 @@ namespace mik {
  * @brief RAII style accessor for a WrappedMutex var
  */
 template <class UnderlyingVarType, class MutexType>
-class VarWithLock {
+class VarAccessor {
 public:
-  VarWithLock(UnderlyingVarType var, std::unique_lock<MutexType> lock)
-      : var_(std::move(var)), lock_(std::move(lock)) {}
+  VarAccessor(UnderlyingVarType& var, std::unique_lock<MutexType> lock)
+      : var_(var), lock_(std::move(lock)) {}
 
   UnderlyingVarType& get_ref() noexcept { return var_; }
 
@@ -21,7 +22,7 @@ public:
   UnderlyingVarType clone() const { return var_; }
 
 private:
-  UnderlyingVarType var_;
+  UnderlyingVarType& var_;
   std::unique_lock<MutexType> lock_;
 };
 
@@ -31,8 +32,13 @@ private:
 template <class UnderlyingVarType, class MutexType = std::mutex>
 class WrappedMutex {
 public:
-  explicit WrappedMutex(UnderlyingVarType var) : var_(std::move(var)) {}
-  VarWithLock<UnderlyingVarType, MutexType> get() { return {var_, std::unique_lock{mutex_}}; }
+  template <class... Args>
+  explicit WrappedMutex(Args&&... args) : var_(std::forward<Args>(args)...) {}
+
+  VarAccessor<UnderlyingVarType, MutexType> get() {
+    return {var_, std::unique_lock<MutexType>{mutex_}};
+  }
+
   bool try_lock() { return mutex_.try_lock(); }
 
 private:
@@ -41,3 +47,5 @@ private:
 };
 
 } // namespace mik
+
+#endif

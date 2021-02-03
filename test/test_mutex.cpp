@@ -36,13 +36,37 @@ TEST(WrappedMutexTest, userDefinedType) {
   WrappedMutex<UserDefinedStruct> wrapped_udt{udt};
 }
 
-TEST(WrappedMutexTest, templateDeduction) {
+TEST(WrappedMutexTest, explicitTypeDeduction) {
+  // Compiles
   std::string a_string{"hello"};
-  WrappedMutex wrappedS_Tring{a_string};
+  WrappedMutex<std::string> wrapped_string{a_string};
+  /* Doesn't compile:
+   * std::string a_string{"hello"};
+   * WrappedMutex wrapped_string{a_string};
+   */
+}
+
+TEST(WrappedMutexTest, modifyVariable) {
+  WrappedMutex<std::string> wrapped_string{"modify me"};
+  {
+    auto string_accessor = wrapped_string.get();
+    string_accessor.get_ref() = "you are modified";
+  }
+
+  const auto const_string_accessor = wrapped_string.get();
+  ASSERT_EQ(const_string_accessor.get_ref(), "you are modified");
+}
+
+TEST(WrappedMutexTest, forwardArgs) {
+  // Similar to vector::emplace_back
+  using vector_type = std::vector<int>;
+  constexpr vector_type::size_type size = 5;
+  constexpr vector_type::value_type value = 12;
+  WrappedMutex<vector_type> wrapped_string(size, value);
 }
 
 TEST(WrappedMutexTest, accessFromOtherThread) {
-  WrappedMutex wrapped_int{15};
+  WrappedMutex<int> wrapped_int{15};
   auto owned_var = wrapped_int.get();
   std::atomic<uint32_t> try_lock_attempts{0};
 
