@@ -12,20 +12,27 @@
 using namespace mik;
 
 // Check that it even compiles
-TEST(WrappedMutexTest, intConstructor) {
-  WrappedMutex<int> wrappedInt{3};
+TEST(wrapped_varTest, intConstructor) {
+  wrapped_var<int> wrappedInt{3};
   auto var_with_lock = wrappedInt.get();
   ASSERT_EQ(var_with_lock.get_ref(), 3);
 }
 
-TEST(WrappedMutexTest, recursiveMutex) {
-  WrappedMutex<int, std::recursive_mutex> wrappedInt{3};
+TEST(wrapped_varTest, constRef) {
+  wrapped_var<int> wrappedInt{3};
+  const auto var_with_lock = wrappedInt.get();
+  const auto ref = var_with_lock.get_cref();
+  ASSERT_EQ(ref, 3);
+}
+
+TEST(wrapped_varTest, recursiveMutex) {
+  wrapped_var<int, std::recursive_mutex> wrappedInt{3};
   auto var_with_lock = wrappedInt.get();
 
   ASSERT_EQ(var_with_lock.get_ref(), 3);
 }
 
-TEST(WrappedMutexTest, userDefinedType) {
+TEST(wrapped_varTest, userDefinedType) {
   struct UserDefinedStruct {
     int value_0;
     float value_1;
@@ -33,40 +40,40 @@ TEST(WrappedMutexTest, userDefinedType) {
   };
 
   UserDefinedStruct udt{0, 0.0f, "hello"};
-  WrappedMutex<UserDefinedStruct> wrapped_udt{udt};
+  wrapped_var<UserDefinedStruct> wrapped_udt{udt};
 }
 
-TEST(WrappedMutexTest, explicitTypeDeduction) {
+TEST(wrapped_varTest, explicitTypeDeduction) {
   // Compiles
   std::string a_string{"hello"};
-  WrappedMutex<std::string> wrapped_string{a_string};
-  /* Doesn't compile:
+  wrapped_var<std::string> wrapped_string{a_string};
+  /* Doesn't/Shouldn't compile:
    * std::string a_string{"hello"};
-   * WrappedMutex wrapped_string{a_string};
+   * wrapped_var wrapped_string{a_string};
    */
 }
 
-TEST(WrappedMutexTest, modifyVariable) {
-  WrappedMutex<std::string> wrapped_string{"modify me"};
+TEST(wrapped_varTest, modifyVariable) {
+  wrapped_var<std::string> wrapped_string{"modify me"};
   {
     auto string_accessor = wrapped_string.get();
     string_accessor.get_ref() = "you are modified";
   }
 
   const auto const_string_accessor = wrapped_string.get();
-  ASSERT_EQ(const_string_accessor.get_ref(), "you are modified");
+  ASSERT_EQ(const_string_accessor.get_cref(), "you are modified");
 }
 
-TEST(WrappedMutexTest, forwardArgs) {
+TEST(wrapped_varTest, forwardArgs) {
   // Similar to vector::emplace_back
   using vector_type = std::vector<int>;
   constexpr vector_type::size_type size = 5;
   constexpr vector_type::value_type value = 12;
-  WrappedMutex<vector_type> wrapped_string(size, value);
+  wrapped_var<vector_type> wrapped_string(size, value);
 }
 
-TEST(WrappedMutexTest, accessFromOtherThread) {
-  WrappedMutex<int> wrapped_int{15};
+TEST(wrapped_varTest, accessFromOtherThread) {
+  wrapped_var<int> wrapped_int{15};
   auto owned_var = wrapped_int.get();
   std::atomic<uint32_t> try_lock_attempts{0};
 

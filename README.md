@@ -18,7 +18,7 @@ ctest
 ### Usage
 Create a `std::string` and protect it underneath a mutex
 ```cpp
-WrappedMutex<std::string> wrapped_string{"hello there"};
+wrapped_var<std::string> wrapped_string{"hello there"};
 ```
 
 Create a `std::vector` and protect it underneath a mutex.
@@ -26,12 +26,12 @@ Create a `std::vector` and protect it underneath a mutex.
 using vector_type = std::vector<int>;
 constexpr vector_type::size_type size = 5;
 constexpr vector_type::value_type value = 12;
-WrappedMutex<vector_type> wrapped_string(size, value);
+wrapped_var<vector_type> wrapped_string(size, value);
 ```
 
 Modify a mutex-protected `std::string`
 ```cpp
-WrappedMutex<std::string> wrapped_string{"modify me"};
+wrapped_var<std::string> wrapped_string{"modify me"};
 {
   auto string_accessor = wrapped_string.get();
   string_accessor.get_ref() = "you are modified";

@@ -7,36 +7,42 @@
 namespace mik {
 
 /**
- * @brief RAII style accessor for a WrappedMutex var
+ * @brief RAII style accessor for a wrapped_var var
+ * @tparam UnderlyingVarType the variable type protected by the mutex
+ * @tparam MutexType the mutex that protects UnderlyingType
+ * @tparam LockType the type used for locking MutexType
  */
-template <class UnderlyingVarType, class MutexType>
-class VarAccessor {
+template <class UnderlyingVarType, class MutexType, class LockType>
+class var_accesor {
 public:
-  VarAccessor(UnderlyingVarType& var, std::unique_lock<MutexType> lock)
+  var_accesor(UnderlyingVarType& var, LockType lock)
       : var_(var), lock_(std::move(lock)) {}
 
   UnderlyingVarType& get_ref() noexcept { return var_; }
 
-  const UnderlyingVarType& get_ref() const noexcept { return var_; }
+  const UnderlyingVarType& get_cref() const noexcept { return var_; }
 
   UnderlyingVarType clone() const { return var_; }
 
 private:
   UnderlyingVarType& var_;
-  std::unique_lock<MutexType> lock_;
+  LockType lock_;
 };
 
 /**
  * @brief Mutex wrapper around variable of type UnderlyingVarType
+ * @tparam UnderlyingVarType the variable type protected by the mutex
+ * @tparam MutexType the mutex that protects UnderlyingType
+ * @tparam LockType the type used for locking MutexType
  */
-template <class UnderlyingVarType, class MutexType = std::mutex>
-class WrappedMutex {
+template <class UnderlyingVarType, class MutexType = std::mutex, class LockType = std::unique_lock<MutexType>>
+class wrapped_var {
 public:
   template <class... Args>
-  explicit WrappedMutex(Args&&... args) : var_(std::forward<Args>(args)...) {}
+  explicit wrapped_var(Args&&... args) : var_(std::forward<Args>(args)...) {}
 
-  VarAccessor<UnderlyingVarType, MutexType> get() {
-    return {var_, std::unique_lock<MutexType>{mutex_}};
+  var_accesor<UnderlyingVarType, MutexType, LockType> get() {
+    return {var_, LockType{mutex_}};
   }
 
   bool try_lock() { return mutex_.try_lock(); }
