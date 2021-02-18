@@ -12,38 +12,38 @@
 using namespace mik;
 
 // Check that it even compiles
-TEST(wrapped_varTest, intConstructor) {
-  wrapped_var<int> wrappedInt{3};
-  auto var_with_lock = wrappedInt.get();
+TEST(wrapped_var_test, int_constructor) {
+  wrapped_var<int> wrapped_int{3};
+  auto var_with_lock = wrapped_int.get();
   ASSERT_EQ(var_with_lock.get_ref(), 3);
 }
 
-TEST(wrapped_varTest, constRef) {
-  wrapped_var<int> wrappedInt{3};
-  const auto var_with_lock = wrappedInt.get();
+TEST(wrapped_var_test, const_ref) {
+  wrapped_var<int> wrapped_int{3};
+  const auto var_with_lock = wrapped_int.get();
   const auto ref = var_with_lock.get_cref();
   ASSERT_EQ(ref, 3);
 }
 
-TEST(wrapped_varTest, recursiveMutex) {
-  wrapped_var<int, std::recursive_mutex> wrappedInt{3};
-  auto var_with_lock = wrappedInt.get();
+TEST(wrapped_var_test, recursive_mutex) {
+  wrapped_var<int, std::recursive_mutex> wrapped_int{3};
+  auto var_with_lock = wrapped_int.get();
 
   ASSERT_EQ(var_with_lock.get_ref(), 3);
 }
 
-TEST(wrapped_varTest, userDefinedType) {
-  struct UserDefinedStruct {
+TEST(wrapped_var_test, user_defined_type) {
+  struct user_defined_struct {
     int value_0;
     float value_1;
     std::string value_3;
   };
 
-  UserDefinedStruct udt{0, 0.0f, "hello"};
-  wrapped_var<UserDefinedStruct> wrapped_udt{udt};
+  user_defined_struct udt{0, 0.0f, "hello"};
+  wrapped_var<user_defined_struct> wrapped_udt{udt};
 }
 
-TEST(wrapped_varTest, explicitTypeDeduction) {
+TEST(wrapped_var_test, explicit_type_deduction) {
   // Compiles
   std::string a_string{"hello"};
   wrapped_var<std::string> wrapped_string{a_string};
@@ -53,7 +53,7 @@ TEST(wrapped_varTest, explicitTypeDeduction) {
    */
 }
 
-TEST(wrapped_varTest, modifyVariable) {
+TEST(wrapped_var_test, modify_var) {
   wrapped_var<std::string> wrapped_string{"modify me"};
   {
     auto string_accessor = wrapped_string.get();
@@ -64,7 +64,7 @@ TEST(wrapped_varTest, modifyVariable) {
   ASSERT_EQ(const_string_accessor.get_cref(), "you are modified");
 }
 
-TEST(wrapped_varTest, forwardArgs) {
+TEST(wrapped_var_test, forward_args) {
   // Similar to vector::emplace_back
   using vector_type = std::vector<int>;
   constexpr vector_type::size_type size = 5;
@@ -72,7 +72,7 @@ TEST(wrapped_varTest, forwardArgs) {
   wrapped_var<vector_type> wrapped_string(size, value);
 }
 
-TEST(wrapped_varTest, accessFromOtherThread) {
+TEST(wrapped_var_test, access_from_other_thread) {
   wrapped_var<int> wrapped_int{15};
   auto owned_var = wrapped_int.get();
   std::atomic<uint32_t> try_lock_attempts{0};
