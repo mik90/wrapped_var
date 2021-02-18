@@ -13,9 +13,9 @@ namespace mik {
  * @tparam LockType the type used for locking MutexType
  */
 template <class UnderlyingVarType, class MutexType, class LockType>
-class var_accesor {
+class var_accessor {
 public:
-  var_accesor(UnderlyingVarType& var, LockType lock)
+  var_accessor(UnderlyingVarType& var, LockType lock)
       : var_(var), lock_(std::move(lock)) {}
 
   UnderlyingVarType& get_ref() noexcept { return var_; }
@@ -41,7 +41,7 @@ public:
   template <class... Args>
   explicit wrapped_var(Args&&... args) : var_(std::forward<Args>(args)...) {}
 
-  var_accesor<UnderlyingVarType, MutexType, LockType> get() {
+  var_accessor<UnderlyingVarType, MutexType, LockType> get() {
     return {var_, LockType{mutex_}};
   }
 
