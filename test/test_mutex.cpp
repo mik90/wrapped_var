@@ -21,15 +21,49 @@ TEST(wrapped_var_test, int_constructor) {
 TEST(wrapped_var_test, const_ref) {
   wrapped_var<int> wrapped_int{3};
   const auto var_with_lock = wrapped_int.get();
-  const auto ref = var_with_lock.get_cref();
-  ASSERT_EQ(ref, 3);
+  const auto cref = var_with_lock.get_cref();
+  ASSERT_EQ(cref, 3);
 }
+
+/*
+TEST(wrapped_var_test, lock_guard) {
+  /// @todo Is there any way to avoid writing "std::mutex" twice?
+  wrapped_var<int, std::mutex, std::lock_guard<std::mutex>> wrapped_int{3};
+  const auto var_with_lock = wrapped_int.get();
+  ASSERT_EQ(var_with_lock.get_cref(), 3);
+}
+*/
+
+TEST(wrapped_var_test, unique_lock) {
+  wrapped_var<int, std::mutex, std::unique_lock<std::mutex>> wrapped_int{3};
+  const auto var_with_lock = wrapped_int.get();
+  ASSERT_EQ(var_with_lock.get_cref(), 3);
+}
+
+/*
+TEST(wrapped_var_test, scoped_lock) {
+  wrapped_var<int, std::mutex, std::scoped_lock<std::mutex>> wrapped_int{3};
+  const auto var_with_lock = wrapped_int.get();
+  ASSERT_EQ(var_with_lock.get_cref(), 3);
+}
+*/
 
 TEST(wrapped_var_test, recursive_mutex) {
   wrapped_var<int, std::recursive_mutex> wrapped_int{3};
-  auto var_with_lock = wrapped_int.get();
+  const auto var_with_lock = wrapped_int.get();
+  ASSERT_EQ(var_with_lock.get_cref(), 3);
+}
 
-  ASSERT_EQ(var_with_lock.get_ref(), 3);
+TEST(wrapped_var_test, timed_mutex) {
+  wrapped_var<int, std::timed_mutex> wrapped_int{3};
+  const auto var_with_lock = wrapped_int.get();
+  ASSERT_EQ(var_with_lock.get_cref(), 3);
+}
+
+TEST(wrapped_var_test, recursive_timed_mutex) {
+  wrapped_var<int, std::recursive_timed_mutex> wrapped_int{3};
+  const auto var_with_lock = wrapped_int.get();
+  ASSERT_EQ(var_with_lock.get_cref(), 3);
 }
 
 TEST(wrapped_var_test, user_defined_type) {
