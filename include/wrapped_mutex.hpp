@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <utility>
+#include <type_traits>
 
 namespace mik {
 
@@ -15,7 +16,9 @@ namespace mik {
 template <class UnderlyingVarType, class MutexType, class LockType>
 class var_accessor {
 public:
-  var_accessor(UnderlyingVarType& var, LockType lock)
+
+  // General case
+  var_accessor(UnderlyingVarType& var, LockType&& lock)
       : var_(var), lock_(std::move(lock)) {}
 
   UnderlyingVarType& get_ref() noexcept { return var_; }
@@ -42,6 +45,7 @@ public:
   explicit wrapped_var(Args&&... args) : var_(std::forward<Args>(args)...) {}
 
   var_accessor<UnderlyingVarType, MutexType, LockType> get() {
+    // No copy constructor for lock guard
     return {var_, LockType{mutex_}};
   }
 

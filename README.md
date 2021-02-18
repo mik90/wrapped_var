@@ -3,11 +3,13 @@
 
 Header only mutex variable wrappers like Rust's `std::sync::Mutex` but for C++
 
-### Setup
-- Requires C++11
+### Requirements
+- Requires C++11 or newer
+- Header-only so conan isn't strictly required to pull this in as a dependency. You could just pull down the header.  
+  I haven't uploaded the recipe to conan-center or anywhere so that's kind of the only option.
+
+### Running unit tests
 - Requires conan
-- Install with conan (not uploaded anywhere yet) or just copy the single header
-- Run unit tests:
 ```sh
 git clone git@github.com:mik90/wrapped_var.git
 mkdir build && cd build
@@ -38,5 +40,9 @@ wrapped_var<std::string> wrapped_string{"modify me"};
 }
 
 const auto const_string_accessor = wrapped_string.get();
-ASSERT_EQ(const_string_accessor.get_ref(), "you are modified");
+ASSERT_EQ(const_string_accessor.get_cref(), "you are modified");
 ```
+
+### Notes
+Not all lock types will compile. `std::lock_guard` and `std::scoped_lock` both hit compilation errors.
+So far only `std::unique_lock` works.
