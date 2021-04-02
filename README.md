@@ -6,16 +6,7 @@ Header only mutex variable wrappers like Rust's `std::sync::Mutex` but for C++
 ### Requirements
 - Requires C++11 or newer
 - Header-only so conan isn't strictly required to pull this in as a dependency. You could just pull down the header.  
-  I haven't uploaded the recipe to conan-center or anywhere so that's kind of the only option.
-
-### Running unit tests
-- Requires conan
-```sh
-git clone git@github.com:mik90/wrapped_var.git
-mkdir build && cd build
-cmake --build . --target UnitTest
-ctest
-```
+  I haven't uploaded the recipe to bincrafters or anywhere so that's kind of the only option.
 
 ### Usage
 Create a `std::string` and protect it underneath a mutex
@@ -43,6 +34,23 @@ const auto const_string_accessor = wrapped_string.get();
 ASSERT_EQ(const_string_accessor.get_cref(), "you are modified");
 ```
 
-### Notes
-Not all lock types will compile. `std::lock_guard` and `std::scoped_lock` both hit compilation errors.
-So far only `std::unique_lock` works.
+### Running unit tests
+- Requires conan
+```sh
+git clone git@github.com:mik90/wrapped_var.git
+mkdir build && cd build
+cmake ..
+cmake --build . --target UnitTest
+ctest
+```
+#### Running tests with sanitizers
+Configure the cmake build for release and enable one of the sanitizer flags.
+Release is more likely to cause problems than debug (or so I read).
+```sh
+-DCMAKE_BUILD_TYPE=Release -DENABLE_SANITIZER_ADDRESS=ON
+```
+
+### Test packaging with conan
+```sh
+conan test . mik90/testing
+```

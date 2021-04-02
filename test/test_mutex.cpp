@@ -25,47 +25,8 @@ TEST(wrapped_var_test, const_ref) {
   ASSERT_EQ(cref, 3);
 }
 
-
 TEST(wrapped_var_test, unique_lock) {
-  /// @todo Is there any way to avoid writing "std::mutex" twice?
-  wrapped_var<int, std::mutex, std::unique_lock<std::mutex>> wrapped_int{3};
-  const auto var_with_lock = wrapped_int.get();
-  ASSERT_EQ(var_with_lock.get_cref(), 3);
-}
-
-/**
-TEST(wrapped_var_test, lock_guard) {
-  /// @todo Can i get lock_guard to work?
-  wrapped_var<int, std::mutex, std::lock_guard<std::mutex>> wrapped_int{3};
-  const auto var_with_lock = wrapped_int.get();
-  ASSERT_EQ(var_with_lock.get_cref(), 3);
-}
-
-// C++17 and newer
-#if __cplusplus >= 201703L
-TEST(wrapped_var_test, scoped_lock) {
-  /// @todo Can i get scoped_lock to work?
-  wrapped_var<int, std::mutex, std::scoped_lock<std::mutex>> wrapped_int{3};
-  const auto var_with_lock = wrapped_int.get();
-  ASSERT_EQ(var_with_lock.get_cref(), 3);
-}
-#endif
-*/
-
-TEST(wrapped_var_test, recursive_mutex) {
-  wrapped_var<int, std::recursive_mutex> wrapped_int{3};
-  const auto var_with_lock = wrapped_int.get();
-  ASSERT_EQ(var_with_lock.get_cref(), 3);
-}
-
-TEST(wrapped_var_test, timed_mutex) {
-  wrapped_var<int, std::timed_mutex> wrapped_int{3};
-  const auto var_with_lock = wrapped_int.get();
-  ASSERT_EQ(var_with_lock.get_cref(), 3);
-}
-
-TEST(wrapped_var_test, recursive_timed_mutex) {
-  wrapped_var<int, std::recursive_timed_mutex> wrapped_int{3};
+  wrapped_var<int> wrapped_int{3};
   const auto var_with_lock = wrapped_int.get();
   ASSERT_EQ(var_with_lock.get_cref(), 3);
 }
